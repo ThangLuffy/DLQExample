@@ -8,4 +8,4 @@
 - Khi item trong Delay Queue đến thời điểm xử lý (thời gian delay hết hạn - time delay is expired), thực hiện lại call function A với tham số id xác định.
 
 ## Sơ đồ luồng xử lý
-![](C:\Users\vinov\Downloads\DLQ.drawio.png "flow_process_DLQ")
+![flow_DLQ_example.png](..%2F..%2FUsers%2Fvinov%2FDownloads%2Fflow_DLQ_example.png)
