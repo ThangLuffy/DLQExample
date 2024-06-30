@@ -1,6 +1,5 @@
-package com.example.processor;
+package com.example.utils;
 
-import com.example.utils.DLQEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -11,12 +10,12 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class DLQProcessor {
+public class DLQCommonUtil {
     //    TODO process delay queue is forced to empty when application is shutdown
     public static final DelayQueue<DLQEntry<Long>> COMMON_DLQ = new DelayQueue<>();
     private final ExecutorService executorService;
 
-    public DLQProcessor() {
+    public DLQCommonUtil() {
 //        TODO config max thread in properties
         int MAX_THREAD = 2;
         executorService = Executors.newFixedThreadPool(MAX_THREAD);

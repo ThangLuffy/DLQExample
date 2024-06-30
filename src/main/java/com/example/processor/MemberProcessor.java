@@ -5,6 +5,7 @@ import com.example.model.request.ApproveDocumentRequest;
 import com.example.model.response.ApproveDocumentResponse;
 import com.example.service.IntegrateDigitalDocumentService;
 import com.example.service.MemberService;
+import com.example.utils.DLQCommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -68,6 +69,6 @@ public class MemberProcessor {
                 member.getId(),
                 mapRetryApproveForMemberId.get(member.getId()),
                 Objects.isNull(response.getBody()) ? "Error in response from Digital Document Service" : response.getBody().toString());
-        DLQProcessor.addToDLQ(member.getId(), 5, TimeUnit.MINUTES, () -> approveDocument(member.getId()));
+        DLQCommonUtil.addToDLQ(member.getId(), 5, TimeUnit.MINUTES, () -> approveDocument(member.getId()));
     }
 }
