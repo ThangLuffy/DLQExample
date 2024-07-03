@@ -1,6 +1,7 @@
 package com.example.dlqexample;
 
 import com.example.model.entities.Member;
+import com.example.model.enums.MemberStatus;
 import com.example.model.request.ApproveDocumentRequest;
 import com.example.model.response.ApproveDocumentResponse;
 import com.example.utils.DLQEntry;
@@ -28,7 +29,7 @@ public class DLQUnitTest {
                 .fullName("nguyen van thang")
                 .username("thangnv")
                 .identityNo(12313233L)
-                .status("NEW")
+                .status(MemberStatus.NEW)
                 .build();
         execute();
         for (int i = 0; i < 5; i++) {
@@ -38,7 +39,7 @@ public class DLQUnitTest {
     }
 
     public static void approveDocument(Member member) {
-        member.setStatus("WAITING_FOR_APPROVE");
+        member.setStatus(MemberStatus.WAIT_FOR_APPROVE);
 
         var approveDocumentRequest = new ApproveDocumentRequest();
         approveDocumentRequest.setMemberId(member.getId());

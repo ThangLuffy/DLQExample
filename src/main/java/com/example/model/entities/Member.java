@@ -46,8 +46,8 @@ public class Member {
     private String approvedBy;
 
     @Column(name = "status")
-//    @Enumerated(value = EnumType.STRING)
-    private String status;
+    @Enumerated(value = EnumType.STRING)
+    private MemberStatus status;
 
     @Version
     private int version;
