@@ -2,9 +2,7 @@ package com.example.model.entities;
 
 import com.example.model.enums.MemberStatus;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +11,8 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "member")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,8 +46,8 @@ public class Member {
     private String approvedBy;
 
     @Column(name = "status")
-    @Enumerated(value = EnumType.STRING)
-    private MemberStatus status;
+//    @Enumerated(value = EnumType.STRING)
+    private String status;
 
     @Version
     private int version;
