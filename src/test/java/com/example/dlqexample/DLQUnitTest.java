@@ -11,15 +11,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.DelayQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
 public class DLQUnitTest {
     static final DelayQueue<DLQEntry<Long>> COMMON_DLQ = new DelayQueue<>();
-    static final int MAX_THREAD = 2;
-    static final ExecutorService executorService = Executors.newFixedThreadPool(MAX_THREAD);
     private static final Map<Long, Long> mapRetryApproveForMemberId = new HashMap<>();
     private static final long MAX_TIME_RETRY_APPROVE_DOCUMENT = 5;
 
@@ -31,10 +27,10 @@ public class DLQUnitTest {
                 .identityNo(12313233L)
                 .status(MemberStatus.NEW)
                 .build();
-        execute();
-        for (int i = 0; i < 5; i++) {
-            approveDocument(member);
-            executorService.awaitTermination(5, TimeUnit.SECONDS);
+        approveDocument(member);
+        while (!COMMON_DLQ.isEmpty()) {
+            var entry = COMMON_DLQ.take();
+            entry.apply();
         }
     }
 
@@ -77,8 +73,6 @@ public class DLQUnitTest {
 
 //                         save log response in db
                 mapRetryApproveForMemberId.remove(mapRetryApproveForMemberId.get(member.getId()));
-//                executorService.submit(approveDocument(member));
-                executorService.shutdown();
                 return;
             }
             mapRetryApproveForMemberId.put(member.getId(), retryTime + 1);
@@ -93,21 +87,5 @@ public class DLQUnitTest {
 
     public static void addToDLQ(Long requestId, long delay, TimeUnit timeUnit, Runnable runnable) {
         COMMON_DLQ.add(new DLQEntry<>(requestId, delay, timeUnit, runnable));
-    }
-
-    public static void execute() {
-        Thread evictionThread = new Thread(() -> {
-            while (true) {
-                try {
-                    var entry = COMMON_DLQ.take();
-                    executorService.execute(entry::apply);
-                } catch (InterruptedException e) {
-                    System.out.println("exception: " + e.getMessage());
-                }
-
-            }
-        });
-        evictionThread.setDaemon(true);
-        evictionThread.start();
     }
 }
